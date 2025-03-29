@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from '@/lib/supabase'; // Required for auth
 
 const sponsorTypes = ["Corporate", "Individual", "Government", "Non-Profit"];
 
@@ -50,28 +51,75 @@ const RegisterForm = () => {
     }
   };
 
-  const handleSubmit = (e, type) => {
+  // const handleSubmit = async (e, type) => {
+  //   e.preventDefault();
+    
+  //   try {
+  //     const { data: authData, error: authError } = await supabase.auth.signUp({
+  //       email: formData.email,
+  //       password: formData.password,
+  //     });
+  
+  //     const { error: profileError } = await supabase
+  //       .from('profiles')
+  //       .insert({
+  //         id: authData.user?.id,
+  //         full_name: formData.name,
+  //         phone_number: formData.phoneNumber,
+  //         user_type: type,
+  //         // Conditional fields
+  //         ...(type === 'sponsor' && { 
+  //           organization_name: formData.businessName,
+  //           sponsor_types: formData.sponsorType 
+  //         }),
+  //         ...(type === 'vendor' && { 
+  //           business_name: formData.businessName 
+  //         })
+  //       });
+  //   } catch (error) {
+  //     toast({
+  //             title: "Registration failed",
+  //             description: error.message,
+  //             variant: "destructive"
+  //           });
+  //   }
+  // }
+
+  const handleSubmit = async (e, type) => {
     e.preventDefault();
     
-    if (formData.password !== formData.confirmPassword) {
-      toast({
-        title: "Passwords do not match",
-        description: "Please ensure both passwords match.",
-        variant: "destructive",
+    try {
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: { // Add this for immediate profile access
+            full_name: formData.name,
+            phone_number: formData.phoneNumber,
+            user_type: type,
+            ...(type === 'sponsor' && { 
+              organization_name: formData.businessName,
+              sponsor_types: formData.sponsorType 
+            }),
+            ...(type === 'vendor' && { 
+              business_name: formData.businessName 
+            })
+          }
+        }
       });
-      return;
+  
+      if (authError) throw authError;
+  
+      // No need for separate profile insert with options.data above
+      toast({ title: "Check your email for confirmation!" });
+      
+    } catch (error) {
+      toast({
+        title: "Registration failed",
+        description: error.message,
+        variant: "destructive"
+      });
     }
-
-    console.log("Registering as:", type, formData);
-    
-    toast({
-      title: "Registration successful!",
-      description: `Your ${type} account has been created.`,
-    });
-    
-    setTimeout(() => {
-      navigate(`/dashboard/${type}`);
-    }, 1500);
   };
 
   return (

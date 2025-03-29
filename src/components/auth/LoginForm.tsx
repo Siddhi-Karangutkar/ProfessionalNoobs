@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from '@/lib/supabase'; // Required for auth
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -23,22 +24,83 @@ const LoginForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+    
+  //   try {
+  //     const { data, error } = await supabase.auth.signInWithPassword({
+  //       email,
+  //       password
+  //     });
+  
+  //     if (error) throw error;
+  
+  //     // Get user profile
+  //     const { data: profile } = await supabase
+  //       .from('profiles')
+  //       .select('user_type')
+  //       .eq('id', data.user.id)
+  //       .single();
+  
+  //     toast({ title: "Login successful!" });
+  //     navigate(`/dashboard/${profile.user_type}`);
+  //   } catch (error) {
+  //     toast({
+  //       title: "Login failed",
+  //       description: error.message,
+  //       variant: "destructive"
+  //     });
+  //   }
+  // };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+    
+  //   try {
+  //     const { data, error } = await supabase.auth.signInWithPassword({
+  //       email,
+  //       password
+  //     });
+  
+  //     if (error) throw error;
+  
+  //     // Force refresh auth state
+  //     window.location.reload();
+      
+  //   } catch (error) {
+  //     toast({
+  //       title: "Login failed",
+  //       description: error.message.includes('Email not confirmed') 
+  //         ? "Confirm your email first" 
+  //         : error.message,
+  //       variant: "destructive"
+  //     });
+  //   }
+  // };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // In a real app, this would authenticate with a backend
-    console.log("Logging in:", { email, password, userType });
-    
-    // Simulating authentication success
-    toast({
-      title: "Login successful!",
-      description: "Welcome back to VisibilitySponsor.",
-    });
-    
-    // Redirect to appropriate dashboard
-    setTimeout(() => {
-      navigate(`/dashboard/${userType}`);
-    }, 1500);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+  
+      if (error) throw error;
+  
+      // Force state refresh
+      window.location.href = `/dashboard/${data.user.user_metadata.user_type}`;
+  
+    } catch (error) {
+      toast({
+        title: "Login failed",
+        description: error.message.includes('Invalid login credentials') 
+          ? "Check email/password"
+          : error.message,
+        variant: "destructive"
+      });
+    }
   };
 
   return (
