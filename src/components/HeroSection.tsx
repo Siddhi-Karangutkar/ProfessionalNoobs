@@ -32,7 +32,7 @@ const HeroSection = () => {
           <div className="md:w-1/2 md:pl-12 animate-slide-from-right">
             <div className="rounded-lg bg-white/10 backdrop-blur-sm p-6 border border-white/20">
               <img 
-                src="https://images.unsplash.com/photo-1521322800607-8c38375eef04" 
+                src="https://th.bing.com/th/id/OIP.j4CTqaVkVsKPgRDxzzIr0QHaE8?w=226&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" 
                 alt="Vendors and sponsors collaborating" 
                 className="w-full h-auto rounded-lg shadow-lg"
               />
