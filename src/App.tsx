@@ -20,11 +20,18 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard/vendor" element={<VendorDashboardPage />} />
-          <Route path="/dashboard/sponsor" element={<SponsorDashboardPage />} />
+
+          {/* Vendor Dashboard with Nested Routes */}
+          <Route path="/dashboard/vendor/*" element={<VendorDashboardPage />} />
+
+          {/* Sponsor Dashboard with Nested Routes */}
+          <Route path="/dashboard/sponsor/*" element={<SponsorDashboardPage />} />
+
+          {/* 404 Fallback */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
