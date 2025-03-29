@@ -10,7 +10,10 @@ import Register from "./pages/Register";
 import VendorDashboardPage from "./pages/VendorDashboardPage";
 import SponsorDashboardPage from "./pages/SponsorDashboardPage";
 import NotFound from "./pages/NotFound";
-
+import AboutPage from "./pages/AboutPage";
+import HowItWorks from "./pages/HowItWorks";
+import SuccessStories from "./pages/SuccessStories";
+import FaqPage from "./pages/FaqPage"; // Ensure this exists
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -27,7 +30,10 @@ const App = () => (
 
           {/* Vendor Dashboard with Nested Routes */}
           <Route path="/dashboard/vendor/*" element={<VendorDashboardPage />} />
-
+          <Route path="/AboutPage" element={<AboutPage />} />
+          <Route path="/FaqPage" element={<FaqPage />} />
+          <Route path="/HowItWorks" element={<HowItWorks />} /> 
+          <Route path="/SuccessStories" element={<SuccessStories />} /> 
           {/* Sponsor Dashboard with Nested Routes */}
           <Route path="/dashboard/sponsor/*" element={<SponsorDashboardPage />} />
 

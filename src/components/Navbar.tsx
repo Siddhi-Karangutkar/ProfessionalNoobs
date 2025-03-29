@@ -16,16 +16,16 @@ const Navbar = () => {
         </Link>
         
         <div className="hidden md:flex items-center space-x-6">
-          <Link to="/about" className="text-gray-600 hover:text-brand-purple transition-colors">
+          <Link to="/AboutPage" className="text-gray-600 hover:text-brand-purple transition-colors">
             About
           </Link>
-          <Link to="/how-it-works" className="text-gray-600 hover:text-brand-purple transition-colors">
+          <Link to="/HowItWorks" className="text-gray-600 hover:text-brand-purple transition-colors">
             How It Works
           </Link>
-          <Link to="/success-stories" className="text-gray-600 hover:text-brand-purple transition-colors">
+          <Link to="/SuccessStories" className="text-gray-600 hover:text-brand-purple transition-colors">
             Success Stories
           </Link>
-          <Link to="/faq" className="text-gray-600 hover:text-brand-purple transition-colors">
+          <Link to="/FaqPage" className="text-gray-600 hover:text-brand-purple transition-colors">
             FAQ
           </Link>
         </div>
