@@ -33,6 +33,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { CreateProposalForm } from "./CreateProposalForm";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { supabase } from "@/lib/supabase";
 
 export const ProposalsList = () => {
   const { user } = useAuth();
