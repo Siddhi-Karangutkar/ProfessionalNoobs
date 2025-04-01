@@ -132,7 +132,7 @@ const VendorMessages = () => {
                   </h4>
                   <p className="text-sm text-gray-600 line-clamp-1">{message.content}</p>
                 </div>
-                {!message.read && <Badge className="bg-blue-600 text-white">New</Badge>
+                {!message.read && <Badge className="bg-blue-600 text-white">New</Badge>}
               </div>
             </div>
           ))}
