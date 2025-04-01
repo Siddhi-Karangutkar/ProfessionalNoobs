@@ -14,6 +14,8 @@ import AboutPage from "./pages/AboutPage";
 import HowItWorks from "./pages/HowItWorks";
 import SuccessStories from "./pages/SuccessStories";
 import FaqPage from "./pages/FaqPage"; // Ensure this exists
+import VendorProfile from "./components/profiles/VendorProfile";
+import SponsorProfile from "./components/profiles/SponsorProfile";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -36,6 +38,9 @@ const App = () => (
           <Route path="/SuccessStories" element={<SuccessStories />} /> 
           {/* Sponsor Dashboard with Nested Routes */}
           <Route path="/dashboard/sponsor/*" element={<SponsorDashboardPage />} />
+
+          <Route path="/vendor/:id" element={<VendorProfile />} />
+          <Route path="/sponsor/:id" element={<SponsorProfile />} />
 
           {/* 404 Fallback */}
           <Route path="*" element={<NotFound />} />

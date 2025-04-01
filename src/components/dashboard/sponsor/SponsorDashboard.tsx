@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,9 +11,52 @@ import {
   ExternalLink
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/lib/supabase";
 
 const SponsorDashboard = () => {
-  // Mock data that would normally come from an API
+  const { user } = useAuth();
+  const [proposals, setProposals] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch proposals from Supabase
+  const fetchProposals = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('proposals')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setProposals(data || []);
+    } catch (error) {
+      console.error("Error fetching proposals:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Set up real-time subscription
+  useEffect(() => {
+    fetchProposals();
+
+    const subscription = supabase
+      .channel('proposals')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'proposals'
+      }, () => {
+        fetchProposals();
+      })
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  // Mock data for stats
   const stats = [
     { title: "Proposals Reviewed", value: "18", icon: <ClipboardCheck className="h-4 w-4" />, change: "+5 from last month" },
     { title: "Active Sponsorships", value: "4", icon: <TrendingUp className="h-4 w-4" />, change: "2 need updates" },
@@ -22,12 +64,7 @@ const SponsorDashboard = () => {
     { title: "Messages", value: "15", icon: <MessageSquare className="h-4 w-4" />, change: "7 unread" },
   ];
 
-  const proposals = [
-    { id: 1, vendor: "Handmade Crafts", title: "Storefront Renovation", amount: "$5,000", status: "Approved" },
-    { id: 2, vendor: "Local Foods Co-op", title: "Marketing Campaign", amount: "$2,500", status: "Pending" },
-    { id: 3, vendor: "Community Bookstore", title: "Literary Festival", amount: "$3,200", status: "Pending" },
-  ];
-
+  // Vendor mock data
   const vendors = [
     { id: 1, name: "Sustainable Fashion", category: "Apparel", location: "Portland, OR", match: "High" },
     { id: 2, name: "Urban Gardens", category: "Agriculture", location: "Seattle, WA", match: "Medium" },
@@ -72,20 +109,19 @@ const SponsorDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {proposals.map((proposal) => (
+                {proposals.slice(0, 3).map((proposal) => (
                   <div key={proposal.id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
                       <h4 className="font-semibold">{proposal.title}</h4>
-                      <p className="text-sm text-gray-500">From: {proposal.vendor}</p>
-                      <p className="text-sm text-gray-500">Requested: {proposal.amount}</p>
+                      <p className="text-sm text-gray-500">From: {proposal.vendor_name}</p>
+                      <p className="text-sm text-gray-500">Requested: ${proposal.requested_amount}</p>
                     </div>
                     <div className="flex items-center space-x-3">
                       <Badge 
                         className={`
-                          ${proposal.status === 'Approved' ? 'bg-green-100 text-green-800 hover:bg-green-100' : 
-                            proposal.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100' : 
-                            'bg-red-100 text-red-800 hover:bg-red-100'}
-                        `}
+                          ${proposal.status === 'approved' ? 'bg-green-100 text-green-800' : 
+                           proposal.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                           'bg-red-100 text-red-800'}`}
                       >
                         {proposal.status}
                       </Badge>
@@ -95,9 +131,18 @@ const SponsorDashboard = () => {
                     </div>
                   </div>
                 ))}
+                
+                {proposals.length === 0 && !loading && (
+                  <div className="text-center py-8 text-gray-500">
+                    No proposals found
+                  </div>
+                )}
+                
+                <Link to="/dashboard/sponsor/proposals">
                 <Button variant="outline" className="w-full mt-4">
                   View All Proposals
                 </Button>
+                </Link>
               </div>
             </CardContent>
           </Card>
@@ -121,8 +166,7 @@ const SponsorDashboard = () => {
                         className={`
                           ${vendor.match === 'High' ? 'bg-green-100 text-green-800 hover:bg-green-100' : 
                             vendor.match === 'Medium' ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100' : 
-                            'bg-blue-100 text-blue-800 hover:bg-blue-100'}
-                        `}
+                            'bg-blue-100 text-blue-800 hover:bg-blue-100'}`}
                       >
                         {vendor.match} Match
                       </Badge>
