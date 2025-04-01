@@ -46,7 +46,7 @@ export const CreateProposalForm = ({ onSuccess }: { onSuccess: () => void }) => 
       </div>
 
       <div>
-        <Label htmlFor="description">Project Description</Label>
+        <Label htmlFor="description">Proposal Description</Label>
         <Textarea
           id="description"
           {...register('description', { required: true })}

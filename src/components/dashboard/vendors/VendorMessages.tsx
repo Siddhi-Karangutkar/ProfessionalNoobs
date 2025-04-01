@@ -43,7 +43,8 @@ const VendorMessages = () => {
                 </h4>
                 <p className="text-sm text-gray-600">{message.preview}</p>
               </div>
-              {message.unread && <Badge variant="purple">New</Badge>}
+              {message.unread && <Badge className="bg-blue-600 text-white">New</Badge>
+              }
             </div>
           </div>
         ))}
